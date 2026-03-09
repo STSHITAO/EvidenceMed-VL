@@ -1,0 +1,65 @@
+project:
+  name: Medical-RAG
+  language: zh
+  top_k_recall: 12
+  top_k_rerank: 4
+
+knowledge:
+  doc_dir: /root/autodl-tmp/Medical/Medical-RAG/data/knowledge
+  chunk_size: 500
+  chunk_overlap: 80
+
+milvus:
+  uri: /root/autodl-tmp/Medical/Medical-RAG/data/milvus_lite.db
+  host: 127.0.0.1
+  port: 19530
+  user: ""
+  password: ""
+  db_name: default
+  collection_name: medical_guidelines_lite
+  consistency_level: Strong
+
+embedding:
+  provider: api
+  model_name: Qwen/Qwen3-VL-Embedding-2B
+  use_fp16: true
+  batch_size: 8
+  max_length: 1024
+  api_base_url: http://127.0.0.1:8001
+  api_key: ""
+  api_key_env: MODELSCOPE_API_TOKEN
+  api_embedding_path: /v1/embeddings
+  api_style: openai
+  timeout_sec: 60
+
+reranker:
+  provider: api
+  model_name: Qwen/Qwen3-VL-Reranker-2B
+  use_fp16: true
+  batch_size: 8
+  api_base_url: http://127.0.0.1:8002
+  api_key: ""
+  api_key_env: MODELSCOPE_API_TOKEN
+  api_rerank_path: /v1/rerank
+  api_style: openai
+  timeout_sec: 60
+
+vlm:
+  base_model_path: /root/autodl-tmp/Qwen/Qwen3-VL-8B-Instruct-merged-lora-20260308
+  lora_adapter_path: ""
+  device: cuda
+  dtype: bfloat16
+  max_new_tokens: 256
+  temperature: 0.2
+  backend: vllm_openai
+  model_name: qwen3-vl-medical
+  api_base_url: http://127.0.0.1:8003
+  api_key: ""
+  api_key_env: VLLM_API_KEY
+  api_chat_path: /v1/chat/completions
+  request_timeout_sec: 120
+
+service:
+  host: 0.0.0.0
+  port: 7860
+  share: false
